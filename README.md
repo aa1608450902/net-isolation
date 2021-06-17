@@ -38,21 +38,21 @@ Isolated net by namespace in Linux!
 
 - ping 192.168.1.1 && ping 192.168.1.2 && ip netns exec xxns ping 192.168.1.2 # 假设这是本机ip，这里应该都能ping通，如果不通，那我就不知道你那边啥情况了O_O．
 
-- # 当前应是，主机能连接到xxns这个网络中，xxns网络中的程序能连接主机；接下来，将主机外部网络接入xxns该网络空间．
+- 当前应是，主机能连接到xxns这个网络中，xxns网络中的程序能连接主机；接下来，将主机外部网络接入xxns该网络空间．
 
 - sysctl -w net.ipv4.ip_forward=1 # Linux默认都是关闭端口转发的，只有作为路由器才打开．
 
-- # 下面两个操作，配置同一主机上不同网卡设备的转发，假设主机网卡叫eno1;添加iptables FORWARD规则，并启动路由转发功能
+- 下面两个操作，配置同一主机上不同网卡设备的转发，假设主机网卡叫eno1;添加iptables FORWARD规则，并启动路由转发功能
 
 - iptables -A FORWARD --out-interface eno1 --in-interface xxbr -j ACCEPT
 
 - iptables -A FORWARD --in-interface eno1 --out-interface ntw2-br -j ACCEPT
 
-- # 添加iptables NAT规则;忘记NAT叫什么了吗?Network Address Translation，网络地址转换，路由器很重要的一部分
+- 添加iptables NAT规则;忘记NAT叫什么了吗?Network Address Translation，网络地址转换，路由器很重要的一部分
 
 - iptables -t nat -A POSTROUTING --source 192.168.1.0/24 --out-interface eno1 -j MASQUERADE
 
-- # 好了，完成！
+- 好了，完成！
 
 - ip netns exec xxns ping 192.168.0.2 # ping通另一个电脑，同时接入外网．
 
